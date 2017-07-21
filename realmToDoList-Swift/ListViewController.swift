@@ -26,6 +26,8 @@ class ListViewController: UIViewController, UITableViewDataSource, UITableViewDe
     var setupView = true
 
     let scopeTitleList = ["To Do", "Done", "All"]
+    
+    var tableViewBigHeader = 88, tableViewSmallHeader = 44
 
     private var items: Results<Task> {
 
@@ -52,28 +54,42 @@ class ListViewController: UIViewController, UITableViewDataSource, UITableViewDe
         }
     }
 
+    func searchScopeOn(){
+        self.searchController.searchBar.showsScopeBar = true
+        
+        self.searchController.searchBar.sizeToFit()
+        self.searchController.loadView()
+        self.tableView.reloadData()
+    }
+    
 
     func viewSetup() {
 
         searchController = UISearchController(searchResultsController: nil)
 
-        self.definesPresentationContext = true
+        self.definesPresentationContext = false
         searchController.delegate = self
-        searchController.searchBar.delegate = self
+        
         searchController.searchResultsUpdater = self
-
         searchController.dimsBackgroundDuringPresentation = false
-
-        searchController.searchBar.sizeToFit()
-        searchController.searchBar.showsScopeBar = true
-        searchController.searchBar.placeholder = "Search Task"
-        searchController.searchBar.backgroundColor = .clear
-
+        
+        searchController.hidesNavigationBarDuringPresentation = false
+        
         searchController.isActive = false
         searchController.searchBar.scopeButtonTitles = scopeTitleList
+        
+        searchController.searchBar.showsScopeBar = true
+        searchController.searchBar.placeholder = "Search Task"
+        searchController.searchBar.barTintColor = lightBlueColor
+        searchController.searchBar.tintColor = .white
+        
+        
+        
+        searchController.searchBar.delegate = self
+        searchController.searchBar.sizeToFit()
+        
         self.tableView.tableHeaderView = searchController.searchBar
-
-
+        
         let footerView = UIView(frame: CGRect.zero)
         footerView.backgroundColor = .white
 
@@ -82,7 +98,7 @@ class ListViewController: UIViewController, UITableViewDataSource, UITableViewDe
 
         self.tableView.rowHeight = UITableViewAutomaticDimension
         self.tableView.estimatedRowHeight = 120.0
-
+        
     }
 
 
@@ -99,12 +115,23 @@ class ListViewController: UIViewController, UITableViewDataSource, UITableViewDe
                 searchedTasks.removeAll(keepingCapacity: false)
                 searchedTasks = taskList
                 
-//                self.tableView.beginUpdates()
-//                self.tableView.insertRows(at: insertions.map { IndexPath(row: $0, section: 0) }, with: .fade)
-//                self.tableView.deleteRows(at: deletions.map { IndexPath(row: $0, section: 0) }, with: .fade)
-//                self.tableView.reloadRows(at: modifications.map { IndexPath(row: $0, section: 0) }, with: .none)
-//                self.tableView.endUpdates()
-                self.tableView.reloadData()
+                if(self.items.count==0){
+                    self.tableView.reloadData()
+                }else{
+                    
+                    self.tableView.beginUpdates()
+                    self.tableView.insertRows(at: insertions.map { IndexPath(row: $0, section: 0) }, with: .fade)
+                    self.tableView.deleteRows(at: deletions.map { IndexPath(row: $0, section: 0) }, with: .fade)
+                    
+                    if(self.selectedScope==2){
+                    self.tableView.reloadRows(at: modifications.map { IndexPath(row: $0, section: 0) }, with: .none)
+                    }else{
+                    self.tableView.deleteRows(at: modifications.map { IndexPath(row: $0, section: 0) }, with: .fade)
+                    }
+                    
+                    self.tableView.endUpdates()
+
+                }
                 break
             case .error(let error):
                 fatalError(String(describing: error))
@@ -142,6 +169,9 @@ class ListViewController: UIViewController, UITableViewDataSource, UITableViewDe
     // When the user ends swiping the cell this method is called
     func swipyCellDidFinishSwiping(_ cell: SwipyCell, atState state: SwipyCellState, triggerActivated activated: Bool) {
         //        print("swipe finished - activated: \(activated), state: \(state)")
+        cell.swipeToOrigin {
+            
+        }
     }
 
     // When the user is dragging, this method is called with the percentage from the border
@@ -150,24 +180,7 @@ class ListViewController: UIViewController, UITableViewDataSource, UITableViewDe
     }
 
     //MARK: Search Delegate
-    func searchBarShouldBeginEditing(_ searchBar: UISearchBar) -> Bool {
-        searchBar.showsScopeBar = true
-        searchBar.sizeToFit()
-        return true
-    }
-    func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
-        searchBar.showsScopeBar = true
-        searchBar.sizeToFit()//showsScopeBar = true
-    }
-
     func updateSearchResults(for searchController: UISearchController) {
-        
-        self.searchController.searchBar.showsScopeBar = true
-        self.searchController.searchBar.sizeToFit()
-        
-//        searchController.searchBar.showsScopeBar = false
-
-//        searchedTasks[selectedScope].removeAll(keepingCapacity: false)
 
         if let searchText = searchController.searchBar.text, !searchText.isEmpty {
 
@@ -175,13 +188,13 @@ class ListViewController: UIViewController, UITableViewDataSource, UITableViewDe
 
             switch selectedScope {
             case 0:
-                predicate = NSPredicate(format: "name contains %@ AND completed == false", searchText.lowercased())
+                predicate = NSPredicate(format: "name CONTAINS[cd] %@ AND completed == false", searchText.lowercased())
                 break
             case 1:
-                predicate = NSPredicate(format: "name contains %@ AND completed == true", searchText.lowercased())
+                predicate = NSPredicate(format: "name CONTAINS[cd] %@ AND completed == true", searchText.lowercased())
                 break
             case 2:
-                predicate = NSPredicate(format: "name contains %@", searchText.lowercased())
+                predicate = NSPredicate(format: "name CONTAINS[cd] %@", searchText.lowercased())
                 break
             default:
                 break
@@ -196,7 +209,31 @@ class ListViewController: UIViewController, UITableViewDataSource, UITableViewDe
 
         self.tableView.reloadData()
     }
+    
+    
+   
+    func didPresentSearchController(_ searchController: UISearchController) {
+        searchScopeOn()
+    }
 
+    func didDismissSearchController(_ searchController: UISearchController) {
+        
+        searchScopeOn()
+    }
+    
+    func willDismissSearchController(_ searchController: UISearchController) {
+        self.searchController.resignFirstResponder()
+        
+       searchScopeOn()
+    }
+    
+    func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
+        self.searchController.resignFirstResponder()
+//        self.searchController.loadView()
+        searchScopeOn()
+    }
+    
+//    func searchbar
 
     func searchBar(_: UISearchBar, selectedScopeButtonIndexDidChange: Int) {
         self.selectedScope = selectedScopeButtonIndexDidChange
@@ -211,8 +248,6 @@ class ListViewController: UIViewController, UITableViewDataSource, UITableViewDe
 
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
 
-        searchController.searchBar.showsScopeBar = !searchController.isActive
-        
 //        let data = searchController.isActive ? searchedTasks : taskList
         let count = items.count
         if(count == 0) {
@@ -285,7 +320,7 @@ class ListViewController: UIViewController, UITableViewDataSource, UITableViewDe
 
         })
 
-        cell.addSwipeTrigger(forState: .state(0, .right), withMode: .toggle, swipeView: viewWithImageName("cross"), swipeColor: redColor, completion: { cell, trigger, state, mode in
+        cell.addSwipeTrigger(forState: .state(0, .right), withMode: .none, swipeView: viewWithImageName("cross"), swipeColor: redColor, completion: { cell, trigger, state, mode in
 
             let yesHandler: ((UIAlertAction) -> Void) = { (action) in
                 //            DELETE TASK
@@ -296,7 +331,7 @@ class ListViewController: UIViewController, UITableViewDataSource, UITableViewDe
             }
 
             let noHandler: ((UIAlertAction) -> Void) = { (action) in
-                cell.swipeToOrigin { }
+//                cell.swipeToOrigin { }
             }
 
             presentYesNoAlert(title: "Are you sure you want to delete that Task?", message: " \(task.name) \nWill be deleted forever!", view: self, yesHandler: yesHandler, noHandler: noHandler)

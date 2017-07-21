@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="12121" systemVersion="16F73" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="QCy-Ic-96E">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="12120" systemVersion="16F73" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="QCy-Ic-96E">
     <device id="retina4_7" orientation="portrait">
         <adaptation id="fullscreen"/>
     </device>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="12089"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="12088"/>
         <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
@@ -13,7 +13,7 @@
         <!--Task List-->
         <scene sceneID="tne-QT-ifu">
             <objects>
-                <viewController title="Task List" id="BYZ-38-t0r" customClass="ListViewController" customModule="strewTest" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController title="Task List" id="BYZ-38-t0r" customClass="ListViewController" customModule="realmToDoList_Swift" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="y3c-jy-aDJ"/>
                         <viewControllerLayoutGuide type="bottom" id="wfy-db-euE"/>
@@ -26,7 +26,7 @@
                                 <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <prototypes>
-                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="TaskCell" rowHeight="60" id="bkJ-Vp-2vR" customClass="TaskCell" customModule="strewTest" customModuleProvider="target">
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="TaskCell" rowHeight="60" id="bkJ-Vp-2vR" customClass="TaskCell" customModule="realmToDoList_Swift" customModuleProvider="target">
                                         <rect key="frame" x="0.0" y="28" width="375" height="60"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="bkJ-Vp-2vR" id="vAP-LA-zaR">
@@ -107,7 +107,7 @@
         <!--Edit Task-->
         <scene sceneID="xsY-k6-Gav">
             <objects>
-                <viewController title="Edit Task" id="66o-2C-tT1" customClass="DetailsViewController" customModule="strewTest" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController title="Edit Task" id="66o-2C-tT1" customClass="DetailsViewController" customModule="realmToDoList_Swift" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="8bs-vo-BwJ"/>
                         <viewControllerLayoutGuide type="bottom" id="NJf-vd-ueZ"/>
@@ -176,9 +176,18 @@
                     <connections>
                         <outlet property="nameTextField" destination="nQ1-4G-3X2" id="um2-PA-VDK"/>
                         <outlet property="prioritySelector" destination="gt8-gI-o8p" id="N1n-a7-RgN"/>
+                        <outlet property="searchDisplayController" destination="qUh-Xg-TBI" id="Kto-y3-Ohc"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="pB5-Na-v23" userLabel="First Responder" sceneMemberID="firstResponder"/>
+                <searchDisplayController id="qUh-Xg-TBI">
+                    <connections>
+                        <outlet property="delegate" destination="66o-2C-tT1" id="MgR-AM-wZb"/>
+                        <outlet property="searchContentsController" destination="66o-2C-tT1" id="6DB-vm-KkK"/>
+                        <outlet property="searchResultsDataSource" destination="66o-2C-tT1" id="HCA-Ry-8Hl"/>
+                        <outlet property="searchResultsDelegate" destination="66o-2C-tT1" id="A45-sz-r3n"/>
+                    </connections>
+                </searchDisplayController>
             </objects>
             <point key="canvasLocation" x="1716" y="-542.87856071964018"/>
         </scene>
