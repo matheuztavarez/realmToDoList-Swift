@@ -1,0 +1,26 @@
+PODS:
+  - Realm (2.8.3):
+    - Realm/Headers (= 2.8.3)
+  - Realm/Headers (2.8.3)
+  - RealmSwift (2.8.3):
+    - Realm (= 2.8.3)
+  - SkyFloatingLabelTextField (3.2.0)
+  - SwipyCell (3.2.0)
+  - Toaster (2.0.4)
+
+DEPENDENCIES:
+  - RealmSwift
+  - SkyFloatingLabelTextField (~> 3.0)
+  - SwipyCell (~> 3.2)
+  - Toaster
+
+SPEC CHECKSUMS:
+  Realm: 3601ef091c8c499a31101d8563b991e75546cdce
+  RealmSwift: 8183818515471b01a99abdd2970f8e4fd52b6f4a
+  SkyFloatingLabelTextField: 4e2d2f7160af660ed1da6bb9d0027b5c474b4b79
+  SwipyCell: 69798614496b09567cd549d2167eb50cef9822d1
+  Toaster: f13031c636ef065281bc11857be9a16c7659e04f
+
+PODFILE CHECKSUM: f3145a9c2e293ac67065574eaa899ecdfe9664a0
+
+COCOAPODS: 1.2.1
